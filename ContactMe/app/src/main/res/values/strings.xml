@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">ContactMe</string>
+    <string name="title_contacts">Contacts</string>
+    <string name="title_events">Events</string>
+    <string name="title_calendar">Calendar</string>
+    <string name="add_contact">Add Contact</string>
+    <string name="back">Back</string>
+    <string name="name">Name</string>
+    <string name="method">Contact Method</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="add_event">Add Event</string>
+    <string name="remove_contact">Remove Contact</string>
+    <string name="remove_event">Remove Event</string>
+    <string name="weeks">Weeks</string>
+    <string name="days">Days</string>
+</resources>
