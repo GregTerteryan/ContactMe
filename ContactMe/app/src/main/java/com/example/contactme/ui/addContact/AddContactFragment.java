@@ -15,9 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.contactme.R;
 import com.example.contactme.ui.contacts.ContactsFragment;
+
+import custom.MyApp;
 
 public class AddContactFragment extends Fragment {
 
@@ -41,15 +44,27 @@ public class AddContactFragment extends Fragment {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String contactName = name.getText().toString();
-                String contactMethod = method.getText().toString();
-                long contactNumber = Long.parseLong(number.getText().toString());
-                int contactDays = Integer.parseInt(days.getText().toString());
-                int contactWeeks = Integer.parseInt(weeks.getText().toString());
+                EditText[] texts = {name, method, number, days, weeks};
+                boolean invalid = false;
+                for (EditText text:texts) {
+                    if (text.getText().toString().equals("")) {
+                        invalid = true;
+                    }
+                }
+                if (!invalid) {
+                    String contactName = name.getText().toString();
+                    String contactMethod = method.getText().toString();
+                    long contactNumber = Long.parseLong(number.getText().toString());
+                    int contactDays = Integer.parseInt(days.getText().toString());
+                    int contactWeeks = Integer.parseInt(weeks.getText().toString());
 
-                AddContactViewModel viewModel = new ViewModelProvider(requireActivity()).get(AddContactViewModel.class);
+                    AddContactViewModel viewModel = new ViewModelProvider(requireActivity()).get(AddContactViewModel.class);
 
-                viewModel.makeContact(contactName,contactMethod,contactNumber, contactDays, contactWeeks);
+                    viewModel.makeContact(contactName, contactMethod, contactNumber, contactDays, contactWeeks);
+                }
+                else {
+                    Toast.makeText(MyApp.getAppContext(), "Please fill all spaces.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         btnBack.setOnClickListener(new View.OnClickListener() {

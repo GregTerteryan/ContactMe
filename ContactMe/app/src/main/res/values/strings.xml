@@ -11,6 +11,6 @@
     <string name="add_event">Add Event</string>
     <string name="remove_contact">Remove Contact</string>
     <string name="remove_event">Remove Event</string>
-    <string name="weeks">Weeks</string>
-    <string name="days">Days</string>
+    <string name="weeks">Weeks to Contact</string>
+    <string name="days">Days to Contact</string>
 </resources>

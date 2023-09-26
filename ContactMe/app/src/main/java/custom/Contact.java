@@ -26,7 +26,7 @@ public class Contact implements Serializable{
         name = "";
         methodOfContact = "";
         phoneNumber = -1;
-        id = -1;
+        id = -1000;
         contactDays = 0;
         contactWeeks = 2;
         isSelected = false;
@@ -38,7 +38,7 @@ public class Contact implements Serializable{
         methodOfContact = "contact";
         contactDays = 0;
         contactWeeks = 2;
-        id = -1;
+        id = -1000;
         isSelected = false;
     }
 
@@ -48,7 +48,7 @@ public class Contact implements Serializable{
         this.phoneNumber = phoneNumber;
         this.contactWeeks = contactWeeks;
         this.contactDays = contactDays;
-        id = -1;
+        id = -1000;
         isSelected = false;
     }
 
@@ -120,7 +120,7 @@ public class Contact implements Serializable{
         return contactWeeks * 7 + contactDays;
     }
 
-    public int getMilliseconds() {
-        return getTotalDays() * 86400000;
+    public long getMilliseconds() {
+        return getTotalDays() * 86400000L;
     }
 }

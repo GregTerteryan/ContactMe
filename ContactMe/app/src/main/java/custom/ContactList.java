@@ -15,12 +15,6 @@ public class ContactList implements Serializable{
      }
 
      public void add(Contact contact) {
-        if (contacts.size() == 0) {
-            contact.setId(0);
-        }
-        else {
-            contact.setId(contacts.get(contacts.size()-1).getId() + 1);
-        }
         contacts.add(contact);
      }
 
