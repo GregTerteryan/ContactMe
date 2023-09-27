@@ -1,5 +1,6 @@
 package com.example.contactme.ui.removeContact;
 
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckedTextView;
+import android.widget.Toast;
 
 import com.example.contactme.R;
 import com.example.contactme.ui.contacts.ContactsFragment;
@@ -31,6 +33,7 @@ import java.io.ObjectOutputStream;
 
 import custom.Contact;
 import custom.ContactList;
+import custom.Event;
 import custom.MyApp;
 
 public class RemoveContactFragment extends Fragment {
@@ -57,11 +60,14 @@ public class RemoveContactFragment extends Fragment {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MyApp.getAppContext());
                 for (int c = 0; c < selected.size(); c++) {
                     contactList.remove(selected.get(c));
+                    cancelNotification(notificationManager, selected.get(c));
                 }
                 save();
                 load();
+                Toast.makeText(MyApp.getAppContext(), "Contact removed.", Toast.LENGTH_SHORT).show();
             }
         });
         Button back = view.findViewById(R.id.back_to_contacts);
@@ -125,6 +131,11 @@ public class RemoveContactFragment extends Fragment {
                 return contactList.size();
             }
         });
+    }
+
+    private void cancelNotification(NotificationManagerCompat notificationManager, Contact contact) {
+        int notificationId = contact.getId();
+        notificationManager.cancel(notificationId);
     }
 
     public void save() {

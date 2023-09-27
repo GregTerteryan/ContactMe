@@ -1,6 +1,8 @@
 package com.example.contactme.ui.contacts;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,27 +10,45 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.contactme.R;
 import com.example.contactme.databinding.FragmentContactsBinding;
 import com.example.contactme.ui.addContact.AddContactFragment;
 import com.example.contactme.ui.removeContact.RemoveContactFragment;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import custom.CollapsibleContactListAdapter;
+import custom.ContactList;
+import custom.MyApp;
+
 public class ContactsFragment extends Fragment {
 
+    @SuppressLint("StaticFieldLeak")
+    private String path = MyApp.getAppContext().getFilesDir().getAbsolutePath();
+    private ContactList contacts = new ContactList();
+    private RecyclerView collapsible;
     private FragmentContactsBinding binding;
     private ContactsViewModel contactsViewModel;
-    private TextView textView;
     private Button btnNext;
     private Button btnRem;
 
     /*
     REVAMP
     editContactsFragment
+
+    collapsible contacts
      */
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -39,8 +59,7 @@ public class ContactsFragment extends Fragment {
         binding = FragmentContactsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        textView = binding.textContacts;
-        contactsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        collapsible = root.findViewById(R.id.collapsible_contacts);
 
         btnNext = root.findViewById(R.id.add_contact);
         btnNext.setOnClickListener(new View.OnClickListener() {
@@ -73,10 +92,18 @@ public class ContactsFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        load();
+        collapsible.setLayoutManager(new LinearLayoutManager(getActivity()));
+        collapsible.setClickable(true);
+        collapsible.setAdapter(new CollapsibleContactListAdapter(contacts, true));
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
-        contactsViewModel.setText("");
-        textView.setVisibility(View.GONE);
+        collapsible.setVisibility(View.GONE);
         btnNext.setVisibility(View.GONE);
         btnRem.setVisibility(View.GONE);
     }
@@ -84,15 +111,56 @@ public class ContactsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        textView.setVisibility(View.VISIBLE);
+        collapsible.setVisibility(View.VISIBLE);
         btnNext.setVisibility(View.VISIBLE);
         btnRem.setVisibility(View.VISIBLE);
-        contactsViewModel.load();
+        load();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public void save() {
+        try {
+            if (path == null) {
+                Log.d("ContactsViewModel", "context is null");
+            }
+            if (path != null) {
+                Log.d("ContactsViewModel", path);
+                FileOutputStream fileOut = new FileOutputStream(path + "/contacts.ser");
+                ObjectOutputStream out = new ObjectOutputStream(fileOut);
+                out.writeObject(contacts);
+                out.close();
+                fileOut.close();
+            }
+        }
+        catch (IOException i) {
+        }
+        catch (NullPointerException n) {
+            Log.d("ContactsViewModel", "NullPointerException");
+            if (path == null) {
+                Log.d("ContactsViewModel", "path is null");
+            }
+        }
+    }
+    public void load() {
+        contacts = null;
+        try {
+            FileInputStream fileIn = new FileInputStream(path + "/contacts.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            contacts = (ContactList) in.readObject();
+            in.close();
+            fileIn.close();
+            Log.d("ContactsViewModel","Successfully loaded.");
+            if (contacts == null) {
+                Log.d("ContactsViewModel", "contacts is null");
+            }
+        } catch (IOException | ClassNotFoundException i) {
+            contacts = new ContactList();
+            save();
+        }
     }
 }

@@ -21,6 +21,7 @@ import android.widget.CheckedTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.example.contactme.R;
 import com.example.contactme.ui.events.EventsFragment;
@@ -81,6 +82,7 @@ public class AddEventFragment extends Fragment {
                 int minute = timePicker.getMinute();
                 AddEventViewModel viewModel = new ViewModelProvider(requireActivity()).get(AddEventViewModel.class);
                 viewModel.makeEvent(eventName,eventInfo,selected,year,month,dayOfMonth,hourOfDay,minute);
+                Toast.makeText(MyApp.getAppContext(), "Event added.", Toast.LENGTH_SHORT).show();
             }
         });
 

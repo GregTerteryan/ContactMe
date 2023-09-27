@@ -1,6 +1,7 @@
 package com.example.contactme.ui.events;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,10 +9,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.contactme.MainActivity;
 import com.example.contactme.R;
@@ -19,13 +23,26 @@ import com.example.contactme.databinding.FragmentEventsBinding;
 import com.example.contactme.ui.addEvent.AddEventFragment;
 import com.example.contactme.ui.removeEvent.RemoveEventFragment;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import custom.CollapsibleEventListAdapter;
+import custom.EventList;
+import custom.MyApp;
+
 public class EventsFragment extends Fragment {
 
     private FragmentEventsBinding binding;
     private EventsViewModel eventsViewModel;
     private Button btnNext;
     private Button btnRem;
-    private TextView textView;
+    private RecyclerView collapsible;
+    private String path = MyApp.getAppContext().getFilesDir().getAbsolutePath();
+
+    private EventList events = new EventList();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -35,8 +52,7 @@ public class EventsFragment extends Fragment {
         binding = FragmentEventsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        textView = binding.textEvents;
-        eventsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        collapsible = root.findViewById(R.id.collapsible_events);
 
         btnNext = root.findViewById(R.id.add_event);
         btnNext.setOnClickListener(new View.OnClickListener() {
@@ -66,11 +82,20 @@ public class EventsFragment extends Fragment {
         });
         return root;
     }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        load();
+        collapsible.setLayoutManager(new LinearLayoutManager(getActivity()));
+        collapsible.setClickable(true);
+        collapsible.setAdapter(new CollapsibleEventListAdapter(events, true));
+    }
+
     @Override
     public void onPause() {
         super.onPause();
-        eventsViewModel.setText("");
-        textView.setVisibility(View.GONE);
+        collapsible.setVisibility(View.GONE);
         btnNext.setVisibility(View.GONE);
         btnRem.setVisibility(View.GONE);
     }
@@ -78,10 +103,10 @@ public class EventsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        textView.setVisibility(View.VISIBLE);
+        collapsible.setVisibility(View.VISIBLE);
         btnNext.setVisibility(View.VISIBLE);
         btnRem.setVisibility(View.VISIBLE);
-        eventsViewModel.load();
+        load();
     }
 
 
@@ -89,5 +114,40 @@ public class EventsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public void save() {
+        try {
+            if (path != null) {
+                FileOutputStream fileOut = new FileOutputStream(path + "/events.ser");
+                ObjectOutputStream out = new ObjectOutputStream(fileOut);
+                out.writeObject(events);
+                out.close();
+                fileOut.close();
+            }
+        }
+        catch (IOException i) {
+
+        }
+        catch (NullPointerException n) {
+            Log.d("EventsViewModel", "NullPointerException");
+            if (path == null) {
+                Log.d("EventsViewModel", "path is null");
+            }
+        }
+    }
+    public void load() {
+        events = null;
+        try {
+            FileInputStream fileIn = new FileInputStream(path + "/events.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            events = (EventList) in.readObject();
+            in.close();
+            fileIn.close();
+
+        } catch (IOException | ClassNotFoundException i) {
+            events = new EventList();
+            save();
+        }
     }
 }

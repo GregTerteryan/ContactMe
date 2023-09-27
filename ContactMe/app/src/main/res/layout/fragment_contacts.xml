@@ -29,16 +29,10 @@
                 android:text="@string/remove_contact"
                 tools:ignore="VisualLintButtonSize">
             </Button>
-            <TextView
-            android:id="@+id/text_contacts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/collapsible_contacts"/>
         </LinearLayout>
 
     </ScrollView>

@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckedTextView;
+import android.widget.Toast;
 
 import com.example.contactme.R;
 import com.example.contactme.ui.events.EventsFragment;
@@ -66,6 +67,7 @@ public class RemoveEventFragment extends Fragment {
                 }
                 save();
                 load();
+                Toast.makeText(MyApp.getAppContext(), "Event removed.", Toast.LENGTH_SHORT).show();
             }
         });
         Button back = view.findViewById(R.id.back_to_events);
