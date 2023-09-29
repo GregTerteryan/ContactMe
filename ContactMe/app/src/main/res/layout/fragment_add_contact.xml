@@ -78,7 +78,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/make_contact"
             android:text="@string/add_contact"
-            tools:ignore="VisualLintButtonSize">
-        </Button>
+            tools:ignore="VisualLintButtonSize"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

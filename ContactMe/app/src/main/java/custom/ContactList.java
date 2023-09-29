@@ -18,7 +18,11 @@ public class ContactList implements Serializable{
         contacts.add(contact);
      }
 
-     public Contact remove(int index) {
+    public ArrayList<Contact> getContacts() {
+        return contacts;
+    }
+
+    public Contact remove(int index) {
         return contacts.remove(index);
      }
 
@@ -52,5 +56,9 @@ public class ContactList implements Serializable{
 
      public int size() {
         return contacts.size();
+     }
+
+     public void set(int index, Contact contact){
+        contacts.set(index, contact);
      }
 }

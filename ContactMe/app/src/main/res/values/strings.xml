@@ -14,4 +14,5 @@
     <string name="weeks">Weeks to Contact</string>
     <string name="days">Days to Contact</string>
     <string name="info">Info</string>
+    <string name="edit_contact">Edit Contact</string>
 </resources>

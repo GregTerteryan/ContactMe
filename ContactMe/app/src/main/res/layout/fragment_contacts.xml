@@ -25,6 +25,13 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/edit_contact"
+                android:text="@string/edit_contact"
+                tools:ignore="VisualLintButtonSize">
+            </Button>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/rem_contact"
                 android:text="@string/remove_contact"
                 tools:ignore="VisualLintButtonSize">

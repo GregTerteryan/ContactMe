@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.contactme.R;
 import com.example.contactme.databinding.FragmentContactsBinding;
 import com.example.contactme.ui.addContact.AddContactFragment;
+import com.example.contactme.ui.editContact.EditContactFragment;
 import com.example.contactme.ui.removeContact.RemoveContactFragment;
 
 import java.io.FileInputStream;
@@ -42,6 +43,7 @@ public class ContactsFragment extends Fragment {
     private FragmentContactsBinding binding;
     private ContactsViewModel contactsViewModel;
     private Button btnNext;
+    private Button btnEdit;
     private Button btnRem;
 
     /*
@@ -69,6 +71,19 @@ public class ContactsFragment extends Fragment {
                 FragmentManager fragmentManager = getParentFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.myConstraintLayout, new AddContactFragment());
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.setReorderingAllowed(true);
+                fragmentTransaction.commit();
+            }
+        });
+        btnEdit = root.findViewById(R.id.edit_contact);
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPause();
+                FragmentManager fragmentManager = getParentFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.myConstraintLayout, new EditContactFragment());
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.setReorderingAllowed(true);
                 fragmentTransaction.commit();

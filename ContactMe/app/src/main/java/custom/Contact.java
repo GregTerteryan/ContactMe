@@ -26,7 +26,7 @@ public class Contact implements Serializable{
         name = "";
         methodOfContact = "";
         phoneNumber = -1;
-        id = -1000;
+        id = -1000000;
         contactDays = 0;
         contactWeeks = 2;
         isSelected = false;
@@ -38,7 +38,7 @@ public class Contact implements Serializable{
         methodOfContact = "contact";
         contactDays = 0;
         contactWeeks = 2;
-        id = -1000;
+        id = -1000000;
         isSelected = false;
     }
 
@@ -48,7 +48,7 @@ public class Contact implements Serializable{
         this.phoneNumber = phoneNumber;
         this.contactWeeks = contactWeeks;
         this.contactDays = contactDays;
-        id = -1000;
+        id = -1000000;
         isSelected = false;
     }
 
@@ -85,7 +85,7 @@ public class Contact implements Serializable{
     }
 
     public String toString() {
-        return name + "\n" + methodOfContact + "\n" + phoneNumber;
+        return name + "\n" + methodOfContact + "\n" + contactWeeks + " weeks " + contactDays + "days" + "\n" + phoneNumber;
     }
 
     public boolean isSelected() {
