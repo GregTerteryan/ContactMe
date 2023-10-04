@@ -26,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.contactme.R;
 import com.example.contactme.ui.contacts.ContactsFragment;
@@ -36,6 +37,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import custom.Contact;
 import custom.ContactList;
@@ -92,9 +94,9 @@ public class EditContactFragment extends Fragment {
                 Contact selectedContact = contactArrayList.get(position);
                 name.setText(selectedContact.getName());
                 method.setText(selectedContact.getMethodOfContact());
-                phoneNumber.setText("" + selectedContact.getPhoneNumber());
-                weeks.setText(selectedContact.getContactWeeks());
-                days.setText(selectedContact.getContactDays());
+                phoneNumber.setText(String.valueOf(selectedContact.getPhoneNumber()));
+                weeks.setText(String.valueOf(selectedContact.getContactWeeks()));
+                days.setText(String.valueOf(selectedContact.getContactDays()));
                 selectedId = position;
             }
         });
@@ -114,7 +116,14 @@ public class EditContactFragment extends Fragment {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (selectedId >= 0) {
+                EditText[] texts = {name, method, phoneNumber, days, weeks};
+                boolean invalid = false;
+                for (EditText text:texts) {
+                    if (text.getText().toString().equals("")) {
+                        invalid = true;
+                    }
+                }
+                if (selectedId >= 0 && !invalid) {
                     Contact contact = contacts.get(selectedId);
                     NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MyApp.getAppContext());
                     cancelNotification(notificationManager, contact);
@@ -125,6 +134,8 @@ public class EditContactFragment extends Fragment {
                     contact.setContactDays(Integer.parseInt(days.getText().toString()));
                     scheduleNotification(contact);
                 }
+                save();
+                Toast.makeText(MyApp.getAppContext(), "Contact Edited", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -171,7 +182,7 @@ public class EditContactFragment extends Fragment {
         String contactName = contact.getMethodOfContact() + contact.getName();
         String contactInfo = "You haven't " + contact.getMethodOfContact() + "ed " + contact.getName() + " for " + contact.getContactWeeks() + " weeks and " + contact.getContactDays() + " days.";
         int contactId = contact.getId();
-        long contactTimeMillis = contact.getMilliseconds();
+        long contactTimeMillis = Calendar.getInstance().getTimeInMillis() + contact.getMilliseconds();
 
         Context context = MyApp.getAppContext();
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

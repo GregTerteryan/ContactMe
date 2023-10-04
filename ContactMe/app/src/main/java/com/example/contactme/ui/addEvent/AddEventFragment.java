@@ -27,11 +27,14 @@ import com.example.contactme.R;
 import com.example.contactme.ui.events.EventsFragment;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import custom.Contact;
 import custom.ContactList;
+import custom.EventList;
 import custom.MyApp;
 
 public class AddEventFragment extends Fragment {
@@ -41,6 +44,7 @@ public class AddEventFragment extends Fragment {
     private ContactList selected = new ContactList();
     private String path = MyApp.getAppContext().getFilesDir().getAbsolutePath();
     private RecyclerView recyclerView;
+
     public static AddEventFragment newInstance() {
         return new AddEventFragment();
     }
@@ -89,9 +93,6 @@ public class AddEventFragment extends Fragment {
 
         return view;
     }
-
-
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

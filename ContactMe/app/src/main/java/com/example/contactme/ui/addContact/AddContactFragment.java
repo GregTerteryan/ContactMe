@@ -60,7 +60,7 @@ public class AddContactFragment extends Fragment {
 
                     AddContactViewModel viewModel = new ViewModelProvider(requireActivity()).get(AddContactViewModel.class);
 
-                    viewModel.makeContact(contactName, contactMethod, contactNumber, contactDays, contactWeeks);
+                    viewModel.makeContact(contactName, contactMethod, contactNumber, contactWeeks, contactDays);
                     Toast.makeText(MyApp.getAppContext(), "Contact added.", Toast.LENGTH_SHORT).show();
                 }
                 else {

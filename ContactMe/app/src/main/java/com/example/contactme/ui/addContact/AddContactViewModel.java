@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Calendar;
 
 import custom.Contact;
 import custom.ContactList;
@@ -81,7 +82,7 @@ public class AddContactViewModel extends ViewModel {
         String contactName = contact.getMethodOfContact() + contact.getName();
         String contactInfo = "You haven't " + contact.getMethodOfContact() + "ed " + contact.getName() + " for " + contact.getContactWeeks() + " weeks and " + contact.getContactDays() + " days.";
         int contactId = contact.getId();
-        long contactTimeMillis = contact.getMilliseconds();
+        long contactTimeMillis = Calendar.getInstance().getTimeInMillis() + contact.getMilliseconds();
 
         Context context = MyApp.getAppContext();
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

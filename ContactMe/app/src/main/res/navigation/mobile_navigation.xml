@@ -3,7 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_contacts">
+    app:startDestination="@+id/navigation_landing_page">
+
+    <fragment
+        android:id="@+id/navigation_landing_page"
+        android:name="com.example.contactme.ui.landingPage.LandingPageFragment"
+        tools:layout="@layout/fragment_landing_page"/>
+        
 
     <fragment
         android:id="@+id/navigation_contacts"

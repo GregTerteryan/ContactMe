@@ -15,4 +15,7 @@
     <string name="days">Days to Contact</string>
     <string name="info">Info</string>
     <string name="edit_contact">Edit Contact</string>
+    <string name="edit_event">Edit Event</string>
+    <string name="submit">Submit</string>
+    <string name="who_did_you_contact_since_the_last_time_you_opened_the_app">Who did you contact since the last time you opened the app?</string>
 </resources>

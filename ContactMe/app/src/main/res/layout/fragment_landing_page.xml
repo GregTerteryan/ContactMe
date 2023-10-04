@@ -4,40 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.removeContact.RemoveContactFragment"
-    android:id="@+id/removeContactConstraintLayout">
+    tools:context=".ui.landingPage.LandingPageFragment"
+    android:id="@+id/myConstraintLayout">
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="96dp"
-        android:clipToPadding="false"
-        >
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <Button
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/back"
-                android:id="@+id/back_to_contacts"
-                tools:ignore="VisualLintButtonSize"/>
+                android:textSize="20sp"
+                android:text="@string/who_did_you_contact_since_the_last_time_you_opened_the_app"
+                android:gravity="center"
+                android:textColor="@color/black"
+                />
+
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/remContRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:scrollbars="vertical"/>
+                android:layout_height="wrap_content"
+                android:id="@+id/contacts_selection"/>
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/remove_contact"
-                tools:ignore="VisualLintButtonSize"
-                android:id="@+id/remove_contact"/>
+                android:text="@string/submit"
+                android:id="@+id/exit_landing"
+                tools:ignore="VisualLintButtonSize"/>
         </LinearLayout>
-
     </ScrollView>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

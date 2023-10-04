@@ -85,7 +85,7 @@ public class Contact implements Serializable{
     }
 
     public String toString() {
-        return name + "\n" + methodOfContact + "\n" + contactWeeks + " weeks " + contactDays + "days" + "\n" + phoneNumber;
+        return name + "\n" + methodOfContact + "\n" + contactWeeks + " weeks " + contactDays + " days" + "\n" + phoneNumber;
     }
 
     public boolean isSelected() {
