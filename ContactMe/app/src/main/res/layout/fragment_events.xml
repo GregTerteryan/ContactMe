@@ -25,6 +25,12 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/go_edit_events"
+                android:text="@string/edit_event"
+                tools:ignore="VisualLintButtonSize"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/removeanevent"
                 android:text="@string/remove_event"
                 tools:ignore="VisualLintButtonSize" />

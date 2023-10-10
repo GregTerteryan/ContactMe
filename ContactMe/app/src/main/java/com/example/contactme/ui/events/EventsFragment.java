@@ -21,6 +21,7 @@ import com.example.contactme.MainActivity;
 import com.example.contactme.R;
 import com.example.contactme.databinding.FragmentEventsBinding;
 import com.example.contactme.ui.addEvent.AddEventFragment;
+import com.example.contactme.ui.editEvent.EditEventFragment;
 import com.example.contactme.ui.removeEvent.RemoveEventFragment;
 
 import java.io.FileInputStream;
@@ -39,6 +40,7 @@ public class EventsFragment extends Fragment {
     private EventsViewModel eventsViewModel;
     private Button btnNext;
     private Button btnRem;
+    private Button btnEdit;
     private RecyclerView collapsible;
     private String path = MyApp.getAppContext().getFilesDir().getAbsolutePath();
 
@@ -62,6 +64,19 @@ public class EventsFragment extends Fragment {
                 FragmentManager fragmentManager = getParentFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.myConstraintLayout, new AddEventFragment());
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.setReorderingAllowed(true);
+                fragmentTransaction.commit();
+            }
+        });
+        btnEdit = root.findViewById(R.id.go_edit_events);
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onPause();
+                FragmentManager fragmentManager = getParentFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.myConstraintLayout, new EditEventFragment());
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.setReorderingAllowed(true);
                 fragmentTransaction.commit();
@@ -98,6 +113,7 @@ public class EventsFragment extends Fragment {
         collapsible.setVisibility(View.GONE);
         btnNext.setVisibility(View.GONE);
         btnRem.setVisibility(View.GONE);
+        btnEdit.setVisibility(View.GONE);
     }
 
     @Override
@@ -106,6 +122,7 @@ public class EventsFragment extends Fragment {
         collapsible.setVisibility(View.VISIBLE);
         btnNext.setVisibility(View.VISIBLE);
         btnRem.setVisibility(View.VISIBLE);
+        btnEdit.setVisibility(View.VISIBLE);
         load();
     }
 

@@ -38,6 +38,10 @@ public class EventList implements Serializable {
         return result;
     }
 
+    public void set(int index, Event event) {
+        events.set(index, event);
+    }
+
     public ArrayList<Event> getEvents() {
         return events;
     }

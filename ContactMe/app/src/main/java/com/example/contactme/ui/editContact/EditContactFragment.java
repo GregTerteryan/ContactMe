@@ -118,9 +118,14 @@ public class EditContactFragment extends Fragment {
             public void onClick(View view) {
                 EditText[] texts = {name, method, phoneNumber, days, weeks};
                 boolean invalid = false;
+                if ((Integer.parseInt(days.getText().toString()) < 0 || Integer.parseInt(weeks.getText().toString()) < 0) || (Integer.parseInt(days.getText().toString()) == 0 && Integer.parseInt(weeks.getText().toString()) < 1) || (Integer.parseInt(days.getText().toString()) < 1 & Integer.parseInt(weeks.getText().toString()) == 0)) {
+                    invalid = true;
+                    Toast.makeText(MyApp.getAppContext(), "Must have a positive notification frequency.", Toast.LENGTH_SHORT).show();
+                }
                 for (EditText text:texts) {
                     if (text.getText().toString().equals("")) {
                         invalid = true;
+                        Toast.makeText(MyApp.getAppContext(), "Please enter something in every field.", Toast.LENGTH_SHORT).show();
                     }
                 }
                 if (selectedId >= 0 && !invalid) {
@@ -133,9 +138,10 @@ public class EditContactFragment extends Fragment {
                     contact.setContactWeeks(Integer.parseInt(weeks.getText().toString()));
                     contact.setContactDays(Integer.parseInt(days.getText().toString()));
                     scheduleNotification(contact);
+                    Toast.makeText(MyApp.getAppContext(), "Contact edited.", Toast.LENGTH_SHORT).show();
                 }
                 save();
-                Toast.makeText(MyApp.getAppContext(), "Contact Edited", Toast.LENGTH_SHORT).show();
+
             }
         });
 
