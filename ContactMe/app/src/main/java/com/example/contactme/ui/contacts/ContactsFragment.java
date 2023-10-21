@@ -57,7 +57,11 @@ public class ContactsFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         contactsViewModel =
                 new ViewModelProvider(this).get(ContactsViewModel.class);
-
+        load();
+        for (int c = 0; c < contacts.size(); c++) {
+            contacts.get(c).setSelected(false);
+        }
+        save();
         binding = FragmentContactsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -68,6 +72,10 @@ public class ContactsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 onPause();
+                for (int c = 0; c < contacts.size(); c++) {
+                    contacts.get(c).setSelected(false);
+                }
+                save();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.myConstraintLayout, new AddContactFragment());
@@ -81,6 +89,10 @@ public class ContactsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 onPause();
+                for (int c = 0; c < contacts.size(); c++) {
+                    contacts.get(c).setSelected(false);
+                }
+                save();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.myConstraintLayout, new EditContactFragment());
@@ -94,6 +106,10 @@ public class ContactsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 onPause();
+                for (int c = 0; c < contacts.size(); c++) {
+                    contacts.get(c).setSelected(false);
+                }
+                save();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.myConstraintLayout, new RemoveContactFragment());
@@ -121,6 +137,7 @@ public class ContactsFragment extends Fragment {
         collapsible.setVisibility(View.GONE);
         btnNext.setVisibility(View.GONE);
         btnRem.setVisibility(View.GONE);
+        btnEdit.setVisibility(View.GONE);
     }
 
     @Override
@@ -129,6 +146,7 @@ public class ContactsFragment extends Fragment {
         collapsible.setVisibility(View.VISIBLE);
         btnNext.setVisibility(View.VISIBLE);
         btnRem.setVisibility(View.VISIBLE);
+        btnEdit.setVisibility(View.VISIBLE);
         load();
     }
 

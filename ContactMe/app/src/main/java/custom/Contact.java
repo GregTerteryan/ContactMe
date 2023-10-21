@@ -5,13 +5,6 @@ import java.util.Objects;
 
 public class Contact implements Serializable{
 
-    /*
-    REVAMP:
-    remove info
-    add timeToContact
-    -set notification to amt of days being daysToContact
-    add methodOfContact
-     */
     private String name;
     private String methodOfContact;
     private long phoneNumber;
@@ -28,7 +21,7 @@ public class Contact implements Serializable{
         phoneNumber = -1;
         id = -1000000;
         contactDays = 0;
-        contactWeeks = 2;
+        contactWeeks = -1;
         isSelected = false;
     }
 
@@ -37,7 +30,7 @@ public class Contact implements Serializable{
         this.phoneNumber = phoneNumber;
         methodOfContact = "contact";
         contactDays = 0;
-        contactWeeks = 2;
+        contactWeeks = -1;
         id = -1000000;
         isSelected = false;
     }
@@ -81,11 +74,15 @@ public class Contact implements Serializable{
         if (this == o) return true;
         if (!(o instanceof Contact)) return false;
         Contact contact = (Contact) o;
-        return getPhoneNumber() == contact.getPhoneNumber() && Objects.equals(getName(), contact.getName()) && Objects.equals(getMethodOfContact(), contact.getMethodOfContact());
+        return getPhoneNumber() == contact.getPhoneNumber() && Objects.equals(getName(), contact.getName()) && id == contact.getId();
     }
 
     public String toString() {
         return name + "\n" + methodOfContact + "\n" + contactWeeks + " weeks " + contactDays + " days" + "\n" + phoneNumber;
+    }
+
+    public String oneLine() {
+        return name + " " + methodOfContact + " " + contactWeeks + " weeks " + contactDays + " days " + phoneNumber;
     }
 
     public boolean isSelected() {

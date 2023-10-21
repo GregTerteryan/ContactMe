@@ -43,6 +43,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 
 import custom.Contact;
 import custom.ContactList;
@@ -55,7 +56,7 @@ public class EditEventFragment extends Fragment {
 
     private EditEventViewModel mViewModel;
 
-    private ListView listView;
+    private RecyclerView recycler;
 
     private EventList events = new EventList();
     private ContactList contactList;
@@ -83,12 +84,14 @@ public class EditEventFragment extends Fragment {
         loadCL();
         load();
         selectedId = -1;
-        listView = view.findViewById(R.id.edit_events_list);
+        recycler = view.findViewById(R.id.edit_events_list);
+        recycler.setClickable(true);
         eventName = view.findViewById(R.id.editEventName);
         eventInfo = view.findViewById(R.id.editEventInfo);
         datePicker = view.findViewById(R.id.editDatePicker);
         timePicker = view.findViewById(R.id.editTimePicker);
         recyclerView = view.findViewById(R.id.editEventRecyclerView);
+        recyclerView.setClickable(true);
         back = view.findViewById(R.id.back_from_edit_event);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,47 +119,14 @@ public class EditEventFragment extends Fragment {
                     int minute = timePicker.getMinute();
                     Event event = new Event(name, info, selected);
                     event.setNotificationDate(year, month, dayOfMonth, hourOfDay, minute);
-                    if (events.size() == 0) {
-                        event.setId(0);
-                        Log.d("AddEventViewModel", event.getId() + "");
-                    } else {
-                        event.setId(events.get(events.size() - 1).getId() + 1);
-                        Log.d("AddEventViewModel", event.getId() + "");
-                    }
                     NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MyApp.getAppContext());
                     cancelNotification(notificationManager, events.get(selectedId));
                     scheduleNotification(event);
                     events.set(selectedId, event);
                     save();
+                    load();
                     Toast.makeText(MyApp.getAppContext(), "Event edited.", Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
-
-        ArrayAdapter<String> adapter;
-        ArrayList<Event> eventArrayList = events.getEvents();
-        ArrayList<String> eventNames = new ArrayList<>();
-        for (Event event: eventArrayList) {
-            eventNames.add(event.getName());
-        }
-        adapter = new ArrayAdapter<>(MyApp.getAppContext(), android.R.layout.simple_list_item_single_choice, eventNames);
-        listView.setAdapter(adapter);
-        listView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event selectedEvent = eventArrayList.get(position);
-                eventName.setText(selectedEvent.getName());
-                eventInfo.setText(selectedEvent.getInfo());
-                Calendar cal = Calendar.getInstance();
-                cal.setTimeInMillis(selectedEvent.getNotificationDate());
-                datePicker.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-                timePicker.setHour(cal.get(Calendar.HOUR_OF_DAY));
-                timePicker.setMinute(cal.get(Calendar.MINUTE));
-                for (int c = 0; c < contactList.size(); c++) {
-                    contactList.get(c).setSelected(selectedEvent.getContacts().get(c).isSelected());
-                }
-                selectedId = position;
             }
         });
 
@@ -200,11 +170,84 @@ public class EditEventFragment extends Fragment {
                         }
                     }
                 });
+
             }
 
             @Override
             public int getItemCount() {
                 return contactList.size();
+            }
+
+
+        });
+
+        recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recycler.setAdapter(new RecyclerView.Adapter() {
+            @NonNull
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(android.R.layout.simple_list_item_multiple_choice, parent, false); // Use a built-in layout for simplicity
+                return new RecyclerView.ViewHolder(view) {};
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+                Event event = events.get(position);
+                CheckedTextView eventNameTextView = (CheckedTextView) holder.itemView.findViewById(android.R.id.text1);
+                eventNameTextView.setText(event.getName());
+                eventNameTextView.setChecked(event.isSelected());
+                eventNameTextView.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        if (event.isSelected()) {
+                            event.setSelected(false);
+                        } else {
+                            for (int c = 0; c < events.size(); c++) {
+                                if (c == holder.getAdapterPosition()) {
+                                    event.setSelected(true);
+                                    eventName.setText(event.getName());
+                                    eventInfo.setText(event.getInfo());
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.setTimeInMillis(event.getNotificationDate());
+                                    datePicker.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+                                    timePicker.setHour(cal.get(Calendar.HOUR_OF_DAY));
+                                    timePicker.setMinute(cal.get(Calendar.MINUTE));
+                                    selectedId = holder.getAdapterPosition();
+
+
+
+                                    for (int i = 0; i < contactList.size(); i++) {
+                                        Contact listContact = contactList.get(i);
+                                        if (event.getContacts().contains(listContact)) {
+                                            listContact.setSelected(true);
+                                            selected.add(listContact);
+                                        }
+                                        else {
+                                            listContact.setSelected(false);
+                                            if (selected.contains(listContact)) {
+                                                selected.remove(listContact);
+                                            }
+                                        }
+                                        Objects.requireNonNull(recyclerView.getAdapter()).notifyItemChanged(i);
+                                    }
+                                }
+                                else {
+                                    events.get(c).setSelected(false);
+                                    notifyItemChanged(c);
+                                }
+                            }
+
+                        }
+                        eventNameTextView.setChecked(event.isSelected());
+                    }
+                });
+            }
+
+            @Override
+            public int getItemCount() {
+                return events.size();
             }
         });
     }

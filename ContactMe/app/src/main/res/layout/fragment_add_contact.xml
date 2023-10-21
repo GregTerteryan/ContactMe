@@ -6,6 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".ui.addContact.AddContactFragment"
     android:id="@+id/addContactConstraintLayout">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -80,4 +83,5 @@
             android:text="@string/add_contact"
             tools:ignore="VisualLintButtonSize"/>
     </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

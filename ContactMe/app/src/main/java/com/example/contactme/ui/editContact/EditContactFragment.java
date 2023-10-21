@@ -15,6 +15,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +26,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -46,7 +49,7 @@ import custom.MyApp;
 import custom.NotificationReceiver;
 
 public class EditContactFragment extends Fragment {
-    private ListView listView;
+    private RecyclerView recyclerView;
     private Button back;
     private Button submit;
     private EditText name;
@@ -70,7 +73,7 @@ public class EditContactFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_edit_contact, container, false);
         load();
         selectedId = -1;
-        listView = view.findViewById(R.id.editList);
+        recyclerView = view.findViewById(R.id.editList);
         back = view.findViewById(R.id.backFromEdit);
         submit = view.findViewById(R.id.edit_contact);
         name = view.findViewById(R.id.contactName);
@@ -86,20 +89,6 @@ public class EditContactFragment extends Fragment {
             contactNames.add(contact.getName());
         }
         adapter = new ArrayAdapter<>(MyApp.getAppContext(), android.R.layout.simple_list_item_single_choice, contactNames);
-        listView.setAdapter(adapter);
-        listView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Contact selectedContact = contactArrayList.get(position);
-                name.setText(selectedContact.getName());
-                method.setText(selectedContact.getMethodOfContact());
-                phoneNumber.setText(String.valueOf(selectedContact.getPhoneNumber()));
-                weeks.setText(String.valueOf(selectedContact.getContactWeeks()));
-                days.setText(String.valueOf(selectedContact.getContactDays()));
-                selectedId = position;
-            }
-        });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,8 +128,9 @@ public class EditContactFragment extends Fragment {
                     contact.setContactDays(Integer.parseInt(days.getText().toString()));
                     scheduleNotification(contact);
                     Toast.makeText(MyApp.getAppContext(), "Contact edited.", Toast.LENGTH_SHORT).show();
+                    save();
                 }
-                save();
+
 
             }
         });
@@ -152,7 +142,60 @@ public class EditContactFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(EditContactViewModel.class);
-        // TODO: Use the ViewModel
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setClickable(true);
+        recyclerView.setAdapter(new RecyclerView.Adapter() {
+            @NonNull
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(android.R.layout.simple_list_item_multiple_choice, parent, false); // Use a built-in layout for simplicity
+                return new RecyclerView.ViewHolder(view) {};
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+                Contact contact = contacts.get(position);
+                CheckedTextView contactNameTextView = (CheckedTextView) holder.itemView.findViewById(android.R.id.text1);
+                contactNameTextView.setText(contact.getName());
+                contactNameTextView.setChecked(contact.isSelected());
+                contactNameTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (recyclerView.isClickable()) {
+                            if (contact.isSelected()) {
+                                contact.setSelected(false);
+                            } else {
+                                for (int c = 0; c < contacts.size(); c++) {
+                                    if (c == holder.getAdapterPosition()) {
+                                        contact.setSelected(true);
+                                        selectedId = c;
+                                        name.setText(contact.getName());
+                                        method.setText(contact.getMethodOfContact());
+                                        phoneNumber.setText(String.valueOf(contact.getPhoneNumber()));
+                                        days.setText(String.valueOf(contact.getContactDays()));
+                                        weeks.setText(String.valueOf(contact.getContactWeeks()));
+                                        notifyItemChanged(c);
+                                    }
+                                    else {
+                                        contacts.get(c).setSelected(false);
+                                        notifyItemChanged(c);
+                                    }
+                                }
+
+                            }
+                            contactNameTextView.setChecked(contact.isSelected());
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public int getItemCount() {
+                return contacts.size();
+            }
+        });
     }
 
     public void onDestroyView() {
@@ -161,7 +204,7 @@ public class EditContactFragment extends Fragment {
 
     public void onPause() {
         super.onPause();
-        listView.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
         back.setVisibility(View.GONE);
         submit.setVisibility(View.GONE);
         name.setVisibility(View.GONE);
@@ -174,7 +217,7 @@ public class EditContactFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        listView.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
         back.setVisibility(View.VISIBLE);
         submit.setVisibility(View.VISIBLE);
         name.setVisibility(View.VISIBLE);
@@ -195,7 +238,7 @@ public class EditContactFragment extends Fragment {
         Intent notificationIntent = new Intent(context, NotificationReceiver.class);
         notificationIntent.putExtra("eventName", contactName);
         notificationIntent.putExtra("eventInfo", contactInfo);
-        notificationIntent.putExtra("eventID", contactId);
+        notificationIntent.putExtra("eventId", contactId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, contactId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP, contactTimeMillis, pendingIntent);
     }

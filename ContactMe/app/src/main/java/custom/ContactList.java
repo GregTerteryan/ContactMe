@@ -46,6 +46,14 @@ public class ContactList implements Serializable{
         return result;
      }
 
+     public String oneLines() {
+        String result = "";
+        for (Contact contact:contacts) {
+            result += contact.oneLine() + "\n";
+        }
+        return result;
+     }
+
      public String doubleSpace() {
          String result = "";
          for (Contact contact:contacts) {
@@ -60,5 +68,14 @@ public class ContactList implements Serializable{
 
      public void set(int index, Contact contact){
         contacts.set(index, contact);
+     }
+
+     public boolean contains(String name, long phoneNumber){
+        for (Contact contact: contacts) {
+            if (contact.getName().equals(name) && contact.getPhoneNumber() == phoneNumber) {
+                return true;
+            }
+        }
+        return false;
      }
 }

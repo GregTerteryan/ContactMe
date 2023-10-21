@@ -91,7 +91,7 @@ public class AddEventViewModel extends ViewModel {
         Intent notificationIntent = new Intent(context, NotificationReceiver.class);
         notificationIntent.putExtra("eventName", eventName);
         notificationIntent.putExtra("eventInfo", eventInfo);
-        notificationIntent.putExtra("eventID", eventId);
+        notificationIntent.putExtra("eventId", eventId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, eventId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP, eventTimeMillis, pendingIntent);
     }

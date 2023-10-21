@@ -1,13 +1,18 @@
 package com.example.contactme.ui.landingPage;
 
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +22,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +57,8 @@ public class LandingPageFragment extends Fragment {
     private ContactList contacts;
     private ContactList selected;
 
+    private final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
+
     BottomNavigationView bottomNavigationView;
 
     public static LandingPageFragment newInstance() {
@@ -62,9 +70,13 @@ public class LandingPageFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_landing_page, container, false);
         load();
+        for (int c = 0; c < contacts.size(); c++) {
+            contacts.get(c).setSelected(false);
+        }
+        save();
+
         recyclerView = view.findViewById(R.id.contacts_selection);
         submit = view.findViewById(R.id.exit_landing);
-
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,12 +88,55 @@ public class LandingPageFragment extends Fragment {
                     scheduleNotification(selected.get(c));
                 }
                 Toast.makeText(MyApp.getAppContext(), "Great! Refreshed notifications!", Toast.LENGTH_SHORT).show();
+                Cursor cursor = MyApp.getAppContext().getContentResolver().query(
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+
+                if (cursor != null) {
+                    int nameColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+                    int phoneNumberColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+
+                    while (cursor.moveToNext()) {
+                        String name = cursor.getString(nameColumnIndex);
+                        String phoneNumber = cursor.getString(phoneNumberColumnIndex);
+                        String longNumber = "";
+                        for (char ch: phoneNumber.toCharArray()) {
+                            if (Character.isDigit(ch)) {
+                                longNumber += ch;
+                            }
+                        }
+                        long number = Long.parseLong(longNumber);
+                        if (!contacts.contains(name, number)) {
+                            Contact contact = new Contact(name, number);
+                            if (contacts.size() == 0) {
+                                contact.setId(1000000);
+                            }
+                            else {
+                                contact.setId(contacts.get(contacts.size()-1).getId() + 1);
+                            }
+                            contacts.add(contact);
+                            for (int c = 0; c < contacts.size(); c++) {
+                                contacts.get(c).setSelected(false);
+                            }
+                            save();
+                        }
+                        Log.d("LandingPageFragment", name + " " + phoneNumber);
+                    }
+                    cursor.close();
+                }
                 bottomNavigationView.setVisibility(View.VISIBLE);
                 NavHostFragment.findNavController(LandingPageFragment.this)
                         .navigate(R.id.navigation_contacts);
+
             }
         });
-
+        while (ContextCompat.checkSelfPermission(MyApp.getAppContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+        }
         return view;
     }
 
@@ -134,7 +189,7 @@ public class LandingPageFragment extends Fragment {
     }
 
     public void scheduleNotification(Contact contact) {
-        String contactName = contact.getMethodOfContact() + contact.getName();
+        String contactName = contact.getMethodOfContact() + " " + contact.getName();
         String contactInfo = "You haven't " + contact.getMethodOfContact() + "ed " + contact.getName() + " for " + contact.getContactWeeks() + " weeks and " + contact.getContactDays() + " days.";
         int contactId = contact.getId();
         long contactTimeMillis = Calendar.getInstance().getTimeInMillis() + contact.getMilliseconds();
@@ -144,7 +199,7 @@ public class LandingPageFragment extends Fragment {
         Intent notificationIntent = new Intent(context, NotificationReceiver.class);
         notificationIntent.putExtra("eventName", contactName);
         notificationIntent.putExtra("eventInfo", contactInfo);
-        notificationIntent.putExtra("eventID", contactId);
+        notificationIntent.putExtra("eventId", contactId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, contactId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP, contactTimeMillis, pendingIntent);
     }

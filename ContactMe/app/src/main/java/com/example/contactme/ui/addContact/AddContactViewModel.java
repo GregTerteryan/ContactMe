@@ -89,7 +89,7 @@ public class AddContactViewModel extends ViewModel {
         Intent notificationIntent = new Intent(context, NotificationReceiver.class);
         notificationIntent.putExtra("eventName", contactName);
         notificationIntent.putExtra("eventInfo", contactInfo);
-        notificationIntent.putExtra("eventID", contactId);
+        notificationIntent.putExtra("eventId", contactId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, contactId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP, contactTimeMillis, pendingIntent);
     }

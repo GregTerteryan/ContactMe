@@ -19,14 +19,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/back"
                 android:id="@+id/backFromEdit"/>
-            <ListView
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/editList"/>
             <EditText
                 android:id="@+id/contactName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:ems="10"
                 android:importantForAutofill="no"
                 android:inputType="text"
