@@ -153,7 +153,7 @@ public class EditEventFragment extends Fragment {
             public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
                 Contact contact = contactList.get(position);
                 CheckedTextView contactNameTextView = (CheckedTextView) holder.itemView.findViewById(android.R.id.text1);
-                contactNameTextView.setText(contact.getName());
+                contactNameTextView.setText(contact.getName()+ " " + contact.getPhoneNumber());
                 contactNameTextView.setChecked(contact.isSelected());
                 contactNameTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
