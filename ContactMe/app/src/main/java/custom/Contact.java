@@ -7,7 +7,7 @@ public class Contact implements Serializable{
 
     private String name;
     private String methodOfContact;
-    private long phoneNumber;
+    private String phoneNumber;
     private int contactDays;
     private int contactWeeks;
 
@@ -18,14 +18,14 @@ public class Contact implements Serializable{
     public Contact() {
         name = "";
         methodOfContact = "";
-        phoneNumber = -1;
+        phoneNumber = "";
         id = -1000000;
         contactDays = 0;
         contactWeeks = -1;
         isSelected = false;
     }
 
-    public Contact(String name, long phoneNumber) {
+    public Contact(String name, String phoneNumber) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         methodOfContact = "contact";
@@ -35,17 +35,16 @@ public class Contact implements Serializable{
         isSelected = false;
     }
 
-    public Contact(String name, String methodOfContact, long phoneNumber, int contactWeeks, int contactDays) {
-        this.name = name;
+    public Contact(String name, String methodOfContact, String phoneNumber, int contactWeeks, int contactDays) {
+        this(name, phoneNumber);
         this.methodOfContact = methodOfContact;
-        this.phoneNumber = phoneNumber;
         this.contactWeeks = contactWeeks;
         this.contactDays = contactDays;
         id = -1000000;
         isSelected = false;
     }
 
-    public long getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
@@ -65,7 +64,7 @@ public class Contact implements Serializable{
         this.name = name;
     }
 
-    public void setPhoneNumber(long phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -74,7 +73,7 @@ public class Contact implements Serializable{
         if (this == o) return true;
         if (!(o instanceof Contact)) return false;
         Contact contact = (Contact) o;
-        return getPhoneNumber() == contact.getPhoneNumber() && Objects.equals(getName(), contact.getName()) && id == contact.getId();
+        return getPhoneNumber().equals(contact.getPhoneNumber()) && Objects.equals(getName(), contact.getName()) && id == contact.getId();
     }
 
     public String toString() {

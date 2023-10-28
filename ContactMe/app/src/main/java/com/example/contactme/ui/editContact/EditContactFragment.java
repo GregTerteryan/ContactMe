@@ -123,7 +123,7 @@ public class EditContactFragment extends Fragment {
                     cancelNotification(notificationManager, contact);
                     contact.setName(name.getText().toString());
                     contact.setMethodOfContact(method.getText().toString());
-                    contact.setPhoneNumber(Long.parseLong(phoneNumber.getText().toString()));
+                    contact.setPhoneNumber(phoneNumber.getText().toString());
                     contact.setContactWeeks(Integer.parseInt(weeks.getText().toString()));
                     contact.setContactDays(Integer.parseInt(days.getText().toString()));
                     scheduleNotification(contact);
@@ -173,7 +173,7 @@ public class EditContactFragment extends Fragment {
                                         selectedId = c;
                                         name.setText(contact.getName());
                                         method.setText(contact.getMethodOfContact());
-                                        phoneNumber.setText(String.valueOf(contact.getPhoneNumber()));
+                                        phoneNumber.setText(contact.getPhoneNumber());
                                         days.setText(String.valueOf(contact.getContactDays()));
                                         weeks.setText(String.valueOf(contact.getContactWeeks()));
                                         notifyItemChanged(c);

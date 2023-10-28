@@ -103,13 +103,12 @@ public class LandingPageFragment extends Fragment {
                     while (cursor.moveToNext()) {
                         String name = cursor.getString(nameColumnIndex);
                         String phoneNumber = cursor.getString(phoneNumberColumnIndex);
-                        String longNumber = "";
+                        String number = "";
                         for (char ch: phoneNumber.toCharArray()) {
                             if (Character.isDigit(ch)) {
-                                longNumber += ch;
+                                number += ch;
                             }
                         }
-                        long number = Long.parseLong(longNumber);
                         if (!contacts.contains(name, number)) {
                             Contact contact = new Contact(name, number);
                             if (contacts.size() == 0) {

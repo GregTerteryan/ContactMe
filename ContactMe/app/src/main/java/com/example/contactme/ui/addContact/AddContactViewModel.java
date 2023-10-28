@@ -66,7 +66,7 @@ public class AddContactViewModel extends ViewModel {
             save();
         }
     }
-    public void makeContact(String name, String info, long number, int days, int weeks) {
+    public void makeContact(String name, String info, String number, int days, int weeks) {
         Contact contact = new Contact(name, info, number, days, weeks);
         if (contacts.size() == 0) {
             contact.setId(1000000);

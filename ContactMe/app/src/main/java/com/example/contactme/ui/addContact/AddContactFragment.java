@@ -59,7 +59,7 @@ public class AddContactFragment extends Fragment {
                 if (!invalid) {
                     String contactName = name.getText().toString();
                     String contactMethod = method.getText().toString();
-                    long contactNumber = Long.parseLong(number.getText().toString());
+                    String contactNumber = number.getText().toString();
                     int contactDays = Integer.parseInt(days.getText().toString());
                     int contactWeeks = Integer.parseInt(weeks.getText().toString());
 

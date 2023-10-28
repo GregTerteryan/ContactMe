@@ -70,9 +70,9 @@ public class ContactList implements Serializable{
         contacts.set(index, contact);
      }
 
-     public boolean contains(String name, long phoneNumber){
+     public boolean contains(String name, String phoneNumber){
         for (Contact contact: contacts) {
-            if (contact.getName().equals(name) && contact.getPhoneNumber() == phoneNumber) {
+            if (contact.getName().equals(name) && contact.getPhoneNumber().equals(phoneNumber)) {
                 return true;
             }
         }
